@@ -33,6 +33,20 @@ class TestOrderSuite extends AnyFunSuite with BeforeAndAfter with Matchers {
     result should equal (expected)
   }
 
+  test("Method should avoid Race Condition") {
+    val dependencies = Map(
+      "0" -> Seq("1", "2"),
+      "1" -> Seq("3"),
+      "2" -> Seq("3"),
+    )
+    val expected_first = Seq("0", "2", "1", "3")
+    val expected_second = Seq("0", "1", "2", "3")
+
+    val result = SortUtils.sort(dependencies, parallel = true)
+
+    result should (equal (expected_first) or equal (expected_second))
+  }
+
   test("Method should produce RuntimeException in case of circular dependencies") {
     val dependencies = Map(
       "2" -> Seq("0", "1"),

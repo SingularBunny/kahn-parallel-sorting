@@ -32,6 +32,8 @@ object SortUtils {
         }
       }
 
+      if (parallel) {Await.result(Future.sequence(futures), Duration.Inf)}
+
       for ((node, state) <- visited) {
         if (!state.get()) {
           throw new RuntimeException(f"Node $node is not visited so not a DAG")
